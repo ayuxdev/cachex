@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/ayuxdev/cachex/pkg/cachex"
 	"github.com/ayuxdev/cachex/pkg/config"
 	"github.com/urfave/cli/v2"
-	"golang.org/x/term"
 )
 
 func App() *cli.App {
@@ -47,20 +45,20 @@ func Run(cfg *config.Config) error {
 			logger.Errorf("failed to read URLs from file: %v", err)
 			return nil
 		}
-	} else if !term.IsTerminal(int(os.Stderr.Fd())) {
-		reader := bufio.NewReader(os.Stdin)
-		for {
-			line, err := reader.ReadString('\n')
-			if err != nil {
-				if err == io.EOF {
-					break // End of input
-				} else {
-					return fmt.Errorf("failed to read from stdin: %v", err)
+	} else {
+		// Check for piped input
+		stat, _ := os.Stdin.Stat()
+		if (stat.Mode() & os.ModeCharDevice) == 0 {
+			// We have piped input
+			scanner := bufio.NewScanner(os.Stdin)
+			for scanner.Scan() {
+				line := strings.TrimSpace(scanner.Text())
+				if line != "" {
+					urls = append(urls, line)
 				}
 			}
-			line = strings.TrimSpace(line)
-			if line != "" {
-				urls = append(urls, line)
+			if err := scanner.Err(); err != nil {
+				return fmt.Errorf("failed to read from stdin: %v", err)
 			}
 		}
 	}

@@ -51,6 +51,18 @@ cachex -u https://example.com
 cachex -l urls.txt
 ```
 
+### Scan URLs piped from another command
+
+```bash
+echo "https://example.com" | cachex
+```
+
+or
+
+```bash
+cat urls.txt | cachex
+```
+
 ### All CLI Flags
 
 | Category          | Flag              | Description                              |
