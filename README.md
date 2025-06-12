@@ -167,8 +167,6 @@ Defined in `~/.config/cachex/payloads.yaml`. Includes:
 ```yaml
 payload_headers:
     Forwarded: for=127.0.0.1;host=evil.com;proto=https
-    X-Cache-Bypass: "true"
-    X-Cache-Override: "true"
     X-Client-IP: 127.0.0.1
     X-Custom-IP-Authorization: 127.0.0.1
     X-Forwarded-For: 127.0.0.1
