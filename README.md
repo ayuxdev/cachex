@@ -187,6 +187,41 @@ payload_headers:
     X-Url-Scheme: https
 ```
 
+## Configuration File (`config.yaml`)
+
+By default, `cachex` reads configuration from `~/.config/cachex/config.yaml`.
+
+This allows fine-tuned control over scanning behavior without needing to pass flags every time.
+
+### Example `config.yaml`
+
+```yaml
+scan_mode: single         # Scan mode: 'single' (more precise) or 'multi' (faster)
+threads: 25               # Number of concurrent scanning threads
+
+request_headers:          # Standard headers sent with every request (avoid adding payload or injection headers here to prevent scan issues)
+  Accept: '*/*'
+  User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36
+
+client:
+  dial_timeout: 5         # Dial timeout in seconds (TCP connection)
+  handshake_timeout: 5    # TLS handshake timeout in seconds
+  response_timeout: 10    # Max time to wait for a server response
+  proxy_url: ""           # Optional proxy URL (e.g., http://127.0.0.1:8080)
+
+persistence_checker:
+  enabled: true             # Enable/disable persistence checking
+  num_requests_to_send: 10  # Number of attempts to poison the cache
+  threads: 5                # Threads to use for persistence scanning
+
+logger:
+  log_error: false        # Whether to log failed or errored requests
+  log_mode: pretty        # Log format: 'pretty' (CLI-style) or 'json'
+  log_target: stdout      # internal leave as it is
+  debug: false            # Enable verbose debug logs
+  output_file: ""         # File path to save output (leave blank to disable file logging)
+```
+
 ## How It Works
 
 1. Sends a baseline request
