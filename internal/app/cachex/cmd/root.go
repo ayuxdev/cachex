@@ -27,6 +27,7 @@ func App() *cli.App {
 			if jsonOutput {
 				ProcessJSONOutput(config.Cfg)
 			}
+			ProcessCfg(config.Cfg)
 			return Run(config.Cfg)
 		},
 		CustomAppHelpTemplate: buildHelpMessage(config.Cfg),

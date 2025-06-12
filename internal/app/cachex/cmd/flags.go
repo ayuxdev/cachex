@@ -16,6 +16,7 @@ var (
 	url            string
 	requestTimeout float64
 	jsonOutput     bool
+	disablePrst    bool
 )
 
 func BuildFlags() []cli.Flag {
@@ -70,10 +71,10 @@ func BuildFlags() []cli.Flag {
 		},
 		// Persistence checker flags
 		&cli.BoolFlag{
-			Name:        "chk-prst",
-			Aliases:     []string{"p"},
-			Destination: &cfg.ScannerConfig.PersistenceCheckerArgs.Enabled,
-			Value:       cfg.ScannerConfig.PersistenceCheckerArgs.Enabled,
+			Name:        "no-chk-prst",
+			Aliases:     []string{"np"},
+			Destination: &disablePrst,
+			Value:       !cfg.ScannerConfig.PersistenceCheckerArgs.Enabled,
 		},
 		&cli.IntFlag{
 			Name:        "prst-requests",
@@ -133,4 +134,10 @@ func ProcessRequestTimeout(requestTimeout float64, cfg *config.Config) {
 
 func ProcessJSONOutput(cfg *config.Config) {
 	cfg.ScannerConfig.LoggerConfig.LogMode = "json"
+}
+
+func ProcessCfg(cfg *config.Config) {
+	if disablePrst {
+		cfg.ScannerConfig.PersistenceCheckerArgs.Enabled = false
+	}
 }
