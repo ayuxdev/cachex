@@ -21,6 +21,7 @@ type Scanner struct {
 // It returns a slice of ScannerOutput and a slice of errors encountered during scanning.
 func (s *Scanner) Run() ([]scanner.ScannerOutput, []error) {
 	if err := s.Validate(); err != nil {
+		logger.Errorf("failed to validate args: %v", err)
 		return nil, []error{err}
 	}
 	// Prepare the internal scanner with the configured arguments
